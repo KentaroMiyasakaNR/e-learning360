@@ -1,4 +1,4 @@
 QuizID,Question,Options,CorrectAnswers,NextQuizIDCorrect,NextQuizIDIncorrect,MediaName,explanationText,explanationImageName
-1,クイズ1,Yes/No,1,2,2,https://youtu.be/Uq1WGLw-hko,,
-2,クイズ2,Yes/No,1,3,3,https://youtu.be/Ig1Nvfm7oEU,,
-3,クイズ3,Yes/No,1,4,4,https://youtu.be/GLUbceSr18E,,
+1,クイズ1,Yes/No,1,2,2,q-Q4qar4bQw,,
+2,クイズ2,Yes/No,1,3,3,Ig1Nvfm7oEU,,
+3,クイズ3,Yes/No,1,4,4,GLUbceSr18E,,

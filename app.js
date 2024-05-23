@@ -44,9 +44,12 @@ function parseCSV(data) {
 function displayQuiz(quiz) {
   quizTitle.textContent = quiz.Question;
   const videoURL = `https://www.youtube.com/embed/${quiz.MediaName}`;
-  videoContainer.innerHTML = `<iframe width="560" height="315" src="${videoURL}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+  videoContainer.innerHTML = `<div id="player"></div>`;
 
-  const player = new YT.Player(videoContainer.firstChild, {
+  player = new YT.Player('player', {
+    height: '315',
+    width: '560',
+    videoId: quiz.MediaName,
     events: {
       'onReady': onPlayerReady,
       'onStateChange': onPlayerStateChange
@@ -64,17 +67,20 @@ function displayQuiz(quiz) {
       optionsContainer.appendChild(btn);
     }
   });
+  console.log("displayQuizメソッド内③")
 
   submitBtn.disabled = true;
   selectedOptions = [];
 }
 
 function onPlayerReady(event) {
+  event.target.setVolume(0);
   event.target.playVideo();
 }
 
 function onPlayerStateChange(event) {
   if (event.data === YT.PlayerState.ENDED) {
+    console.log('Video has finished playing');
     optionsContainer.style.display = 'flex';
     submitBtn.disabled = false;
   }
