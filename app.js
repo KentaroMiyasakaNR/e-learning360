@@ -194,12 +194,46 @@ function showFinalResult() {
   }
 
   const percentage = (correctCount / totalQuizzes) * 100;
-  const message = `お疲れさまでした！正答率は${percentage.toFixed(2)}%です！`;
+  let resultText = '';
 
-  const resultContainer = document.createElement('div');
-  resultContainer.id = 'result-container';
-  resultContainer.textContent = message;
+  if (percentage >= 81) {
+    resultText = '優';
+  } else if (percentage >= 61) {
+    resultText = '良';
+  } else if (percentage >= 60) {
+    resultText = '可';
+  } else {
+    resultText = '不可';
+  }
 
-  quizContainer.innerHTML = '';
-  quizContainer.appendChild(resultContainer);
+  const message = `お疲れさまでした！正答率は${percentage.toFixed(2)}%です！<br>判定: ${resultText}`;
+
+  const resultContainer = document.getElementById('result-container');
+  resultContainer.innerHTML = message;
+
+  const reviewBtn = document.createElement('button');
+  reviewBtn.textContent = '間違えた問題の復習';
+  reviewBtn.addEventListener('click', startReview);
+
+  resultContainer.appendChild(reviewBtn);
+  resultContainer.style.display = 'block';
+  quizContainer.style.display = 'none';
+}
+
+function startReview() {
+  const incorrectQuizzes = quizzes.filter(quiz => localStorage.getItem(`quiz-${quiz.QuizID}`) === 'false');
+  
+  if (incorrectQuizzes.length > 0) {
+    quizzes = incorrectQuizzes;
+    totalQuizzes = quizzes.length;
+    currentQuiz = quizzes[0];
+    correctCount = 0;
+    displayQuiz(currentQuiz);
+    
+    const resultContainer = document.getElementById('result-container');
+    resultContainer.style.display = 'none';
+    quizContainer.style.display = 'block';
+  } else {
+    alert('全ての問題に正解しています！');
+  }
 }
