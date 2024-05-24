@@ -8,14 +8,20 @@
 </head>
 <body>
   <header>
-    <h1>Quiz App</h1>
+    <h1>院内感染対策クイズ</h1>
+    <h3>手指消毒が適切なタイミングで行われているか、確認しましょう</h3>
   </header>
   <main>
     <div id="quiz-container">
       <h2 id="quiz-title"></h2>
       <div id="video-container"></div>
       <div id="options-container"></div>
-      <button id="submit-btn" disabled>Submit</button>
+      <button id="submit-btn" disabled>回答</button>
+      <p class="discription">動画終了後に回答できます</p>
+      <div id="progress-container">
+        <div id="progress-bar"></div>
+        <span id="progress-text"></span>
+      </div>
     </div>
   </main>
   <script src="app.js"></script>
