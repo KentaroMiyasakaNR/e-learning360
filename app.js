@@ -67,9 +67,10 @@ function displayQuiz(quiz) {
   },
   updateScoreDisplay()
 );
-  const options = quiz.Options.split('/');
-  optionsContainer.innerHTML = '';
-  if (options.length === 2) {
+
+const options = quiz.Options.split('/');
+optionsContainer.innerHTML = '';
+if (options.length === 2) {
   const radioGroup = document.createElement('div');
   radioGroup.classList.add('radio-group');
   options.forEach((option, index) => {
@@ -79,32 +80,28 @@ function displayQuiz(quiz) {
       radioBtn.name = 'option';
       radioBtn.value = index;
       radioBtn.id = `option-${index}`;
-      radioBtn.addEventListener('change', handleOptionChange); // 変更箇所
+      radioBtn.addEventListener('change', handleOptionChange);
       const label = document.createElement('label');
       label.htmlFor = `option-${index}`;
       label.textContent = option.trim();
       radioGroup.appendChild(radioBtn);
       radioGroup.appendChild(label);
-      }
-    });
-    optionsContainer.appendChild(radioGroup);
-
-  } else {
-    options.forEach(option => {
-      if (option.trim()) {
-        const btn = document.createElement('button');
-        btn.textContent = option.trim();
-        btn.classList.add('option-btn');
-        btn.addEventListener('click', toggleOption);
-        optionsContainer.appendChild(btn);
-      }
-    });
-  }
-
+    }
+  });
+  optionsContainer.appendChild(radioGroup);
+} else {
+  options.forEach(option => {
+    if (option.trim()) {
+      const btn = document.createElement('button');
+      btn.textContent = option.trim();
+      btn.classList.add('option-btn');
+      btn.addEventListener('click', toggleOption);
+      optionsContainer.appendChild(btn);
+    }
+  });
+}
   submitBtn.disabled = true;
   selectedOptions = [];
-
-  updateProgressIndicator();
 }
 
 function onPlayerReady(event) {
@@ -116,7 +113,7 @@ function onPlayerStateChange(event) {
   if (event.data === YT.PlayerState.ENDED) {
     console.log('Video has finished playing');
     optionsContainer.style.display = 'flex';
-    submitBtn.disabled = false;
+    submitBtn.disabled = false; // 動画が終了したらSubmitボタンを有効化
   }
 }
 
@@ -160,17 +157,9 @@ function checkAnswer() {
   } else {
     console.log('All quizzes completed!');
     updateScoreDisplay();
+    showFinalResult();
   }
-
-  if (nextQuiz) {
-    currentQuiz = nextQuiz;
-    displayQuiz(currentQuiz);
-    updateProgressIndicator(); // 追加
-  } else {
-    console.log('All quizzes completed!');
-    updateScoreDisplay();
-    updateProgressIndicator(); // 追加
-  }
+  updateProgressIndicator();
 }
 
 function updateScoreDisplay() {
@@ -181,12 +170,11 @@ function updateScoreDisplay() {
 function handleOptionChange(event) {
   const selectedOption = Number(event.target.value);
   selectedOptions = [selectedOption];
-  submitBtn.disabled = false;
 }
 
 function updateProgressIndicator() {
   const currentIndex = quizzes.findIndex(quiz => quiz.QuizID === currentQuiz.QuizID);
-  const progress = ((currentIndex + 1) / totalQuizzes) * 100;
+  const progress = ((currentIndex) / totalQuizzes) * 100;
   const progressBar = document.getElementById('progress-bar');
   const progressText = document.getElementById('progress-text');
   
@@ -194,3 +182,24 @@ function updateProgressIndicator() {
   progressText.textContent = `${Math.round(progress)}%`;
 }
 
+function showFinalResult() {
+  const totalQuizzes = quizzes.length;
+  let correctCount = 0;
+
+  for (let i = 0; i < totalQuizzes; i++) {
+    const quizResult = localStorage.getItem(`quiz-${quizzes[i].QuizID}`);
+    if (quizResult === 'true') {
+      correctCount++;
+    }
+  }
+
+  const percentage = (correctCount / totalQuizzes) * 100;
+  const message = `お疲れさまでした！正答率は${percentage.toFixed(2)}%です！`;
+
+  const resultContainer = document.createElement('div');
+  resultContainer.id = 'result-container';
+  resultContainer.textContent = message;
+
+  quizContainer.innerHTML = '';
+  quizContainer.appendChild(resultContainer);
+}

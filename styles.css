@@ -107,3 +107,10 @@ body {
     color: #ffffff;
     font-weight: bold;
   }
+  
+  #result-container {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 20px;
+  }
