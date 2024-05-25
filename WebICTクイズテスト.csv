@@ -1,4 +1,4 @@
 QuizID,Question,Options,CorrectAnswers,NextQuizIDCorrect,NextQuizIDIncorrect,MediaName,explanationText,explanationImageName
 1,手指消毒は適切なタイミングで行われていますでしょうか？,Yes/No,1,2,2,lddBm_oaReI,,
 2,手指消毒は適切なタイミングで行われていますでしょうか？,Yes/No,1,3,3,PE86Yfd_FLs,,
-3,不適切な消毒のタイミングがあれば、選択しましょう,患者に触れる前/無菌操作の前/体液に曝露された可能性のある場合/患者に触れた後/患者周辺の物品に触れた後,1,4,4,PE86Yfd_FLs,,
+3,不適切な消毒のタイミングがあれば、選択しましょう,患者に触れる前/無菌操作の前/体液に曝露された可能性のある場合/患者に触れた後/患者周辺の物品に触れた後,4,4,4,Dn69INQf9rU,,
