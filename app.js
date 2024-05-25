@@ -11,6 +11,7 @@ let player;
 let quizzes;
 let totalQuizzes = 0; // 合計クイズ数
 let correctCount = 0; // 正解数
+let videoEnded = false;
 
 // YouTubeプレーヤーAPIの読み込み
 const tag = document.createElement('script');
@@ -46,16 +47,15 @@ function parseCSV(data) {
   return quizzes;
 }
 
-
 function displayQuiz(quiz) {
- quizTitle.textContent = quiz.Question;
- const videoURL = `https://www.youtube.com/embed/${quiz.MediaName}`;
- videoContainer.innerHTML = `<div id="player"></div>`;
- 
+  quizTitle.textContent = quiz.Question;
+  const videoURL = `https://www.youtube.com/embed/${quiz.MediaName}`;
+  videoContainer.innerHTML = `<div id="player"></div>`;
+
   if (player) {
     player.destroy(); // 既存のプレーヤーを破棄
   }
- 
+
   player = new YT.Player('player', {
     height: '315',
     width: '560',
@@ -64,44 +64,46 @@ function displayQuiz(quiz) {
       'onReady': onPlayerReady,
       'onStateChange': onPlayerStateChange
     }
-  },
-  updateScoreDisplay()
-);
+  });
 
-const options = quiz.Options.split('/');
-optionsContainer.innerHTML = '';
-if (options.length === 2) {
-  const radioGroup = document.createElement('div');
-  radioGroup.classList.add('radio-group');
-  options.forEach((option, index) => {
-    if (option.trim()) {
-      const radioBtn = document.createElement('input');
-      radioBtn.type = 'radio';
-      radioBtn.name = 'option';
-      radioBtn.value = index;
-      radioBtn.id = `option-${index}`;
-      radioBtn.addEventListener('change', handleOptionChange);
-      const label = document.createElement('label');
-      label.htmlFor = `option-${index}`;
-      label.textContent = option.trim();
-      radioGroup.appendChild(radioBtn);
-      radioGroup.appendChild(label);
-    }
-  });
-  optionsContainer.appendChild(radioGroup);
-} else {
-  options.forEach(option => {
-    if (option.trim()) {
-      const btn = document.createElement('button');
-      btn.textContent = option.trim();
-      btn.classList.add('option-btn');
-      btn.addEventListener('click', toggleOption);
-      optionsContainer.appendChild(btn);
-    }
-  });
-}
+  const options = quiz.Options.split('/');
+  optionsContainer.innerHTML = '';
+  if (options.length === 2) {
+    const radioGroup = document.createElement('div');
+    radioGroup.classList.add('radio-group');
+    options.forEach((option, index) => {
+      if (option.trim()) {
+        const radioBtn = document.createElement('input');
+        radioBtn.type = 'radio';
+        radioBtn.name = 'option';
+        radioBtn.value = index;
+        radioBtn.id = `option-${index}`;
+        radioBtn.addEventListener('change', handleOptionChange);
+        const label = document.createElement('label');
+        label.htmlFor = `option-${index}`;
+        label.textContent = option.trim();
+        radioGroup.appendChild(radioBtn);
+        radioGroup.appendChild(label);
+      }
+    });
+    optionsContainer.appendChild(radioGroup);
+  } else {
+    options.forEach(option => {
+      if (option.trim()) {
+        const btn = document.createElement('button');
+        btn.textContent = option.trim();
+        btn.classList.add('option-btn');
+        btn.addEventListener('click', toggleOption);
+        optionsContainer.appendChild(btn);
+      }
+    });
+  }
+
   submitBtn.disabled = true;
   selectedOptions = [];
+  videoEnded = false;
+
+  updateScoreDisplay();
 }
 
 function onPlayerReady(event) {
@@ -113,7 +115,8 @@ function onPlayerStateChange(event) {
   if (event.data === YT.PlayerState.ENDED) {
     console.log('Video has finished playing');
     optionsContainer.style.display = 'flex';
-    submitBtn.disabled = false; // 動画が終了したらSubmitボタンを有効化
+    videoEnded = true;
+    checkSubmitButtonState();
   }
 }
 
@@ -124,10 +127,11 @@ function toggleOption(event) {
   event.currentTarget.classList.toggle('active');
   const index = [...optionsContainer.children].indexOf(event.currentTarget);
   if (event.currentTarget.classList.contains('active')) {
-    selectedOptions = [index];
+    selectedOptions.push(index);
   } else {
-    selectedOptions = [];
+    selectedOptions = selectedOptions.filter(option => option !== index);
   }
+  checkSubmitButtonState();
 }
 
 submitBtn.addEventListener('click', checkAnswer);
@@ -138,7 +142,8 @@ function checkAnswer() {
 
   // 選択肢の番号を0始まりから1始まりに変更
   const selectedOptionsOneIndexed = selectedOptions.map(option => option + 1);
-  console.log("選択されたものは" + selectedOptionsOneIndexed)
+  console.log("選択されたものは" + selectedOptionsOneIndexed);
+
   const isCorrect = selectedOptionsOneIndexed.length === correctAnswers.length &&
     selectedOptionsOneIndexed.every(option => correctAnswers.includes(option));
 
@@ -170,6 +175,7 @@ function updateScoreDisplay() {
 function handleOptionChange(event) {
   const selectedOption = Number(event.target.value);
   selectedOptions = [selectedOption];
+  checkSubmitButtonState();
 }
 
 function updateProgressIndicator() {
@@ -177,7 +183,7 @@ function updateProgressIndicator() {
   const progress = ((currentIndex) / totalQuizzes) * 100;
   const progressBar = document.getElementById('progress-bar');
   const progressText = document.getElementById('progress-text');
-  
+
   progressBar.style.width = `${progress}%`;
   progressText.textContent = `${Math.round(progress)}%`;
 }
@@ -212,9 +218,11 @@ function showFinalResult() {
   resultContainer.innerHTML = message;
 
   const reviewBtn = document.createElement('button');
+  reviewBtn.id = 'review-btn';
   reviewBtn.textContent = '間違えた問題の復習';
   reviewBtn.addEventListener('click', startReview);
 
+  resultContainer.appendChild(document.createElement('br'));
   resultContainer.appendChild(reviewBtn);
   resultContainer.style.display = 'block';
   quizContainer.style.display = 'none';
@@ -222,18 +230,26 @@ function showFinalResult() {
 
 function startReview() {
   const incorrectQuizzes = quizzes.filter(quiz => localStorage.getItem(`quiz-${quiz.QuizID}`) === 'false');
-  
+
   if (incorrectQuizzes.length > 0) {
     quizzes = incorrectQuizzes;
     totalQuizzes = quizzes.length;
     currentQuiz = quizzes[0];
     correctCount = 0;
     displayQuiz(currentQuiz);
-    
+
     const resultContainer = document.getElementById('result-container');
     resultContainer.style.display = 'none';
     quizContainer.style.display = 'block';
   } else {
     alert('全ての問題に正解しています！');
+  }
+}
+
+function checkSubmitButtonState() {
+  if (selectedOptions.length > 0 && videoEnded) {
+    submitBtn.disabled = false;
+  } else {
+    submitBtn.disabled = true;
   }
 }
