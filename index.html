@@ -1,33 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>E-learning Quiz</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>ユーザー登録・ログイン</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
   <header>
-    <h1>院内感染対策クイズ</h1>
-    <h3>手指消毒が適切なタイミングで行われているか、確認しましょう</h3>
+    <h1>ユーザー登録・ログイン</h1>
   </header>
   <main>
-    <div id="link-container">
-      <a id="link-button" href="https://med.saraya.com/who/fivemoments.html" target="_blank">手指消毒の<br>タイミングとは？</a>
+    <div id="signup-container">
+      <h2>ユーザー登録</h2>
+      <form id="signupForm">
+        <input type="email" id="signupEmail" placeholder="メールアドレス" required>
+        <input type="password" id="signupPassword" placeholder="パスワード" required>
+        <button type="submit">登録</button>
+      </form>
     </div>
-    <div id="quiz-container">
-      <h2 id="quiz-title"></h2>
-      <div id="video-container"></div>
-      <div id="options-container"></div>
-      <button id="submit-btn" disabled>回答</button>
-      <p class="discription">動画終了後に回答できます</p>
-      <div id="progress-container">
-        <div id="progress-bar"></div>
-        <span id="progress-text"></span>
-      </div>
+
+    <div id="login-container">
+      <h2>ログイン</h2>
+      <form id="loginForm">
+        <input type="email" id="loginEmail" placeholder="メールアドレス" required>
+        <input type="password" id="loginPassword" placeholder="パスワード" required>
+        <button type="submit">ログイン</button>
+      </form>
     </div>
-    <div id="result-container" style="display: none;"></div>
   </main>
-  <script src="app.js"></script>
+
+  <script type="module" src="firebase.js"></script>
 </body>
 </html>

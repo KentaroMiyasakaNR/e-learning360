@@ -1,3 +1,25 @@
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-auth.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyC-x0-OhNR-C_F8LkNl4LTmHXj7fBlbgb8",
+  authDomain: "gsdev27-eb3ba.firebaseapp.com",
+  databaseURL: "https://gsdev27-eb3ba-default-rtdb.firebaseio.com",
+  projectId: "gsdev27-eb3ba",
+  storageBucket: "gsdev27-eb3ba.appspot.com",
+  messagingSenderId: "422792691286",
+  appId: "1:422792691286:web:ad770a3feae0f4f4fac5f7",
+  measurementId: "G-F8ZJ75ZT1R"
+};
+
+// Firebase の初期化
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
 const quizContainer = document.getElementById('quiz-container');
 const quizTitle = document.getElementById('quiz-title');
 const videoContainer = document.getElementById('video-container');
@@ -253,3 +275,35 @@ function checkSubmitButtonState() {
     submitBtn.disabled = true;
   }
 }
+// ログイン中のユーザーIDを表示
+const userEmailElement = document.getElementById('user-email');
+const logoutBtn = document.getElementById('logout-btn');
+
+
+// ログイン状態の確認
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // ユーザーがログインしている場合
+    const userEmail = user.email;
+    userEmailElement.textContent = userEmail;
+    logoutBtn.style.display = 'inline-block';
+  } else {
+    // ユーザーがログインしていない場合
+    userEmailElement.textContent = '';
+    logoutBtn.style.display = 'none';
+  }
+});
+
+// ログアウトボタンのクリックイベント
+logoutBtn.addEventListener('click', () => {
+  signOut(auth)
+    .then(() => {
+      // ログアウト成功
+      console.log('ログアウトしました');
+      window.location.href = 'index.html'; // ログイン画面に戻る
+    })
+    .catch((error) => {
+      // ログアウト失敗
+      console.error('ログアウトエラー:', error);
+    });
+});
