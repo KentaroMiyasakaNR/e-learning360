@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatbot</title>
+    <style>
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+            overflow-y: scroll;
+        }
+
+        .user-message {
+            background-color: #e6e6e6;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            align-self: flex-start;
+            max-width: 70%;
+        }
+
+        .bot-message {
+            background-color: #b3e6ff;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            align-self: flex-end;
+            max-width: 70%;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container" id="chat-container">
+        <!-- ここにメッセージが追加される -->
+    </div>
+    <input type="text" id="user-input" placeholder="メッセージを入力...">
+    <button onclick="sendMessage()">送信</button>
+    <button id="record-button">録音開始</button>
+    <div>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/cF-04qB-V8I" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <script type="module">
+        import { chat } from './chat.js';
+      
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+      
+        window.sendMessage = async function() {
+          const userMessage = userInput.value.trim();
+          if (userMessage) {
+            addMessage('user', userMessage);
+            userInput.value = '';
+      
+            const botReply = await chat(userMessage);
+            addMessage('bot', botReply);
+          }
+        }
+      
+        function addMessage(sender, message) {
+          const messageDiv = document.createElement('div');
+          messageDiv.textContent = message;
+          messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+          chatContainer.appendChild(messageDiv);
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+      </script>
+</body>
+</html>
