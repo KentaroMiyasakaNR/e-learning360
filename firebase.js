@@ -5,7 +5,14 @@ import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.1.0/
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-
+  apiKey: "AIzaSyC-x0-OhNR-C_F8LkNl4LTmHXj7fBlbgb8",
+  authDomain: "gsdev27-eb3ba.firebaseapp.com",
+  databaseURL: "https://gsdev27-eb3ba-default-rtdb.firebaseio.com",
+  projectId: "gsdev27-eb3ba",
+  storageBucket: "gsdev27-eb3ba.appspot.com",
+  messagingSenderId: "422792691286",
+  appId: "1:422792691286:web:ad770a3feae0f4f4fac5f7",
+  measurementId: "G-F8ZJ75ZT1R"
 };
 
 // Firebase の初期化

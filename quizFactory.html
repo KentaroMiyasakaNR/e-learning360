@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>クイズ作成モード</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>クイズ作成モード</h1>
+    <button id="aiButton">AIに聞いてみる</button>
+    <a href="index.html" class="login-link">ログインページへ</a>
+  </header>
+  <main>
+    <section id="csv-viewer">
+      <h2>CSVデータビューア</h2>
+      <table id="quizDataTable">
+        <thead>
+          <tr>
+            <th>QuizID</th>
+            <th>Question</th>
+            <th>Options</th>
+            <th>CorrectAnswers</th>
+            <th>MediaName</th>
+            <th>アクション</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="quizFactory.js"></script>
+</body>
+</html>
